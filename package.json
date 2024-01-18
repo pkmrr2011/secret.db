@@ -1,0 +1,35 @@
+{
+  "name": "secret.db",
+  "version": "1.0.0",
+  "description": "Securely store sensitive data in a secret database with private encoding.",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pkmrr2011/secret.db.git"
+  },
+  "keywords": [
+    "secret",
+    "database",
+    "security",
+    "npm",
+    "private"
+  ],
+  "author": "Prince Kumar (pkmrr2011)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pkmrr2011/secret.db/issues"
+  },
+  "homepage": "https://github.com/pkmrr2011/secret.db#readme",
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "fs": "^0.0.1-security"
+  },
+  "devDependencies": {
+    "chai": "^5.0.0",
+    "mocha": "^10.2.0"
+  }
+}
