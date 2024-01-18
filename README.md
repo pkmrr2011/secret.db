@@ -24,7 +24,7 @@ npm install secret.db
 Import the `Database` class from "secret.db" and create a new instance:
 
 ```
-const { Database } = require('secret.db');
+const Database = require('secret.db');
 
 (async () => {
   try {
@@ -49,7 +49,7 @@ const { Database } = require('secret.db');
 ### Creating Data
 
 ```
-const { Database } = require('secret.db');
+const Database = require('secret.db');
 
 const database = new Database('User');
 const result = await database.create({
@@ -64,7 +64,7 @@ console.log('Data created:', result);
 ### Finding Data
 
 ```
-const { Database } = require('secret.db');
+const Database = require('secret.db');
 
 const database = new Database('User');
 const result = await database.find();
