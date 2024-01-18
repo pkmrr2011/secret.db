@@ -1,6 +1,6 @@
 {
   "name": "secret.db",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Securely store sensitive data in a secret database with private encoding.",
   "main": "index.js",
   "type": "commonjs",
