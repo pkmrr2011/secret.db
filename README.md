@@ -26,8 +26,6 @@ Import the `Database` class from "secret.db" and create a new instance:
 ```
 const { Database } = require('secret.db');
 
-const { Database } = require('secret.db');
-
 (async () => {
   try {
     const database = new Database('User');
@@ -44,6 +42,33 @@ const { Database } = require('secret.db');
     console.error('Error:', error.message);
   }
 })();
+```
+
+## Examples
+
+### Creating Data
+
+```
+const { Database } = require('secret.db');
+
+const database = new Database('User');
+const result = await database.create({
+    name: "prince",
+    age: 24,
+    state: "Delhi",
+    country: "INDIA",
+});
+console.log('Data created:', result);
+```
+
+### Finding Data
+
+```
+const { Database } = require('secret.db');
+
+const database = new Database('User');
+const result = await database.find();
+console.log('Found data:', result);
 ```
 
 ## Contributing
