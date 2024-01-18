@@ -15,15 +15,15 @@ Securely store sensitive data in a secret database with "secret.db". This npm pa
 
 To install Secret.db, use npm:
 
-<!-- ```bash -->
+```
 npm install secret.db
-
+```
 
 ## Usage
 
 Import the `Database` class from "secret.db" and create a new instance:
 
-<!-- ```bash -->
+```
 const { Database } = require('secret.db');
 
 const { Database } = require('secret.db');
@@ -44,8 +44,7 @@ const { Database } = require('secret.db');
     console.error('Error:', error.message);
   }
 })();
-
-
+```
 
 ## Contributing
 
