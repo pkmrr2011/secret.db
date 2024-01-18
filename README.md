@@ -22,7 +22,10 @@ npm install secret.db
 
 Import the `Database` class from "secret.db" and create a new instance:
 
-```bashconst { Database } = require('secret.db');
+```bash
+const { Database } = require('secret.db');
+
+const { Database } = require('secret.db');
 
 (async () => {
   try {
@@ -40,6 +43,7 @@ Import the `Database` class from "secret.db" and create a new instance:
     console.error('Error:', error.message);
   }
 })();
+
 
 
 ## Contributing
