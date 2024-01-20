@@ -99,10 +99,16 @@ class Database {
         const existingData = await this.readDataFromFile();
         let new_data;
     
-        if (Array.isArray(newData)) {
-            new_data = newData.map(newDataObj => Database.encodeString(JSON.stringify(newDataObj)));
+        if(typeof newData === "object"){
+            if (Array.isArray(newData)) {
+                new_data = newData.map(newDataObj => Database.encodeString(JSON.stringify(newDataObj)));
+            } else {
+                new_data = [Database.encodeString(JSON.stringify(newData))];
+            } 
         } else {
-            new_data = [Database.encodeString(JSON.stringify(newData))];
+            new_data = [Database.encodeString(JSON.stringify({
+                data: newData
+            }))];
         }
     
         const updatedData = existingData.concat(new_data);
@@ -143,6 +149,87 @@ class Database {
         return parsedData;
     }
 
-}
+    async update(query={}) {
+        if(!query.where || !query.data){
+            throw new Error("Unsopperted update query")
+        }
+        const rawData = await this.readDataFromFile();
+        const parsedData = rawData.map((rawItem) => {
+            const decodedItem = Database.decodeString(rawItem);
+            return typeof decodedItem === 'string' ? JSON.parse(decodedItem) : decodedItem;
+        });
 
+            let final_data = []
+            const final_encoded_data = parsedData.map(item => {
+                const conditions = Object.entries(query.where).every(([key, value]) => {
+                    if (key === 'or') {
+                        if (!Array.isArray(value)) {
+                            throw new Error(`Invalid "or" condition format`);
+                        }
+                        return value.some(condition => applyCondition(item, condition));
+                    } else if (key === 'and') {
+                        if (!Array.isArray(value)) {
+                            throw new Error(`Invalid "or" condition format`);
+                        }
+                        return value.every(condition => applyCondition(item, condition));
+                    } else {
+                        return applyCondition(item, { [key]: value });
+                    }
+                });
+
+                if (conditions) {
+                    item = { ...item, ...query.data };
+                    final_data.push(item)
+                }
+                
+                return Database.encodeString(JSON.stringify(item))
+            });
+
+        await this.writeDataToFile(final_encoded_data);
+        
+        return final_data;
+    }
+
+    async delete(query={}) {
+        if(!query.where){
+            throw new Error("Unsopperted delete query")
+        }
+        const rawData = await this.readDataFromFile();
+        const parsedData = rawData.map((rawItem) => {
+            const decodedItem = Database.decodeString(rawItem);
+            return typeof decodedItem === 'string' ? JSON.parse(decodedItem) : decodedItem;
+        });
+
+        let delete_count =0
+            let final_encoded_data = parsedData.filter(item => {
+                const conditions = Object.entries(query.where).every(([key, value]) => {
+                    if (key === 'or') {
+                        if (!Array.isArray(value)) {
+                            throw new Error(`Invalid "or" condition format`);
+                        }
+                        return value.some(condition => applyCondition(item, condition));
+                    } else if (key === 'and') {
+                        if (!Array.isArray(value)) {
+                            throw new Error(`Invalid "or" condition format`);
+                        }
+                        return value.every(condition => applyCondition(item, condition));
+                    } else {
+                        return applyCondition(item, { [key]: value });
+                    }
+                });
+
+                if(conditions){
+                    delete_count++
+                } 
+                    return !conditions
+            })
+            final_encoded_data = final_encoded_data.map((item) => {
+                return Database.encodeString(JSON.stringify(item));
+              });
+
+        await this.writeDataToFile(final_encoded_data);
+
+        return `${delete_count} data has been deleted`;
+    }
+}
 module.exports = Database;
