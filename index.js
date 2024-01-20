@@ -120,13 +120,22 @@ class Database {
 
     async find(query = {}) {
         const rawData = await this.readDataFromFile();
+
+        let count = 0
+        const total_count = rawData.length
+        const limit = query.limit || Number.MAX_SAFE_INTEGER
+        const offset = query.offset || 0
+        let final_data = []
+
         let parsedData = rawData.map((rawItem) => {
             const decodedItem = Database.decodeString(rawItem);
             return typeof decodedItem === 'string' ? JSON.parse(decodedItem) : decodedItem;
         });
 
+
         if (query.where) {
-            parsedData = parsedData.filter(item => {
+            for (let i = offset; i < parsedData.length; i++) {
+                const item = parsedData[i];
                 const conditions = Object.entries(query.where).every(([key, value]) => {
                     if (key === 'or') {
                         if (!Array.isArray(value)) {
@@ -142,11 +151,23 @@ class Database {
                         return applyCondition(item, { [key]: value });
                     }
                 });
+                if(count < limit){
+                    if (conditions) {
+                        final_data.push(item)
+                        count++
+                    }
+                } else {
+                    break
+                }
 
-                return conditions;
-            });
+            }
+        } else {
+            final_data = parsedData
         }
-        return parsedData;
+        return {
+            count: total_count,
+            data: final_data
+        }
     }
 
     async update(query={}) {
